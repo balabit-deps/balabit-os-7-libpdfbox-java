@@ -27,12 +27,6 @@ override_dh_auto_build:
 override_dh_installchangelogs:
 	dh_installchangelogs $(CURDIR)/RELEASE-NOTES.txt
 
-override_dh_installexamples:
-	dh_installexamples
-	# empty directory since we remove the contents during repackaging.
-	rmdir --verbose --parents --ignore-fail-on-non-empty $(CURDIR)/debian/libpdfbox-java-doc/usr/share/doc/libpdfbox-java-doc/examples/src/main/resources/org/apache/pdfbox/resources/pdfa
-	rm -f $(CURDIR)/debian/libpdfbox-java-doc/usr/share/doc/libpdfbox-java-doc/examples/pom.xml.save
-
 override_dh_gencontrol:
 	dh_gencontrol -- "-Vmisc:Built-Using=$(htmldoc-common_source)$(lcdf-typetools_source)$(poppler-data_source)"
 
