@@ -1,3 +1,9 @@
+libpdfbox-java (1:1.8.13-2ubuntu1bb1) balabit-os-7.0; urgency=medium
+
+  * Fixed build
+
+ -- Balazs Benedek <balazs.benedek@balabit.com>  Mon, 12 Nov 2018 10:47:14 +0100
+
 libpdfbox-java (1:1.8.13-2) unstable; urgency=medium
 
   * Address FTBFS in debian/rules (Closes: #887939)
@@ -240,7 +246,7 @@ libpdfbox-java (1:1.5.0+dfsg-1) unstable; urgency=low
   * Register API docs with doc-base system.
 
   [ tony mancill ]
-  * Add separate API doc packages libjempbox-java-doc and 
+  * Add separate API doc packages libjempbox-java-doc and
     libfontbox-java-doc.
 
  -- gregor herrmann <gregoa@debian.org>  Wed, 30 Mar 2011 20:18:16 +0200
