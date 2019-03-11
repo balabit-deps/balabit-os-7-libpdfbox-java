@@ -21,8 +21,6 @@ import java.awt.print.Pageable;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +48,7 @@ import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.exceptions.CryptographyException;
 import org.apache.pdfbox.exceptions.SignatureException;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.io.RandomAccess;
 import org.apache.pdfbox.pdfparser.BaseParser;
 import org.apache.pdfbox.pdfparser.NonSequentialPDFParser;
@@ -946,8 +945,11 @@ public class PDDocument implements Pageable, Closeable
     }
 
     /**
-     * This will decrypt a document. This method is provided for compatibility reasons only. User should use
-     * the new security layer instead and the openProtection method especially.
+     * This will decrypt a document. This method is provided for compatibility reasons only. User
+     * should use the new security layer instead and the openProtection method especially.
+     * <p>
+     * Do not call this method if you have opened your document with one of the
+     * {@link #loadNonSeq(java.io.File, org.apache.pdfbox.io.RandomAccess) loadNonSeq} methods.
      *
      * @param password Either the user or owner password.
      *
@@ -1257,7 +1259,7 @@ public class PDDocument implements Pageable, Closeable
 
 
     /**
-     * Parses PDF with non sequential parser.
+     * Parses PDF with the new non sequential parser and an empty password.
      *  
      * @param file  file to be loaded
      * @param scratchFile  location to store temp PDFBox data for this document
@@ -1272,7 +1274,7 @@ public class PDDocument implements Pageable, Closeable
     }
     
     /**
-     * Parses PDF with non sequential parser.
+     * Parses PDF with the new non sequential parser and an empty password.
      *  
      * @param file  file to be loaded
      * @param scratchFile  location to store temp PDFBox data for this document
@@ -1290,7 +1292,7 @@ public class PDDocument implements Pageable, Closeable
     }
 
     /**
-     * Parses PDF with non sequential parser.
+     * Parses PDF with the new non sequential parser.
      *  
      * @param input stream that contains the document.
      * @param scratchFile location to store temp PDFBox data for this document
@@ -1305,7 +1307,7 @@ public class PDDocument implements Pageable, Closeable
     }
 
     /**
-     * Parses PDF with non sequential parser.
+     * Parses PDF with the new non sequential parser.
      *  
      * @param input stream that contains the document.
      * @param scratchFile location to store temp PDFBox data for this document
@@ -1375,26 +1377,42 @@ public class PDDocument implements Pageable, Closeable
         }
     }
 
-    /** 
-     * Save the pdf as incremental.
-     * 
-     * @param fileName the filename to be used
+    /**
+     * Save the pdf as incremental for signing. Use this only for small files
+     * because this method temporarily stores the entire file into memory.
+     *
+     * @param fileName the filename to be used. This should be a copy of the
+     * original file.
      * @throws IOException if something went wrong
-     * @throws COSVisitorException  if something went wrong
+     * @throws COSVisitorException if something went wrong
      */
-    public void saveIncremental( String fileName ) throws IOException, COSVisitorException
+    public void saveIncremental(String fileName) throws IOException, COSVisitorException
     {
-        saveIncremental(new BufferedInputStream(new FileInputStream(fileName)), 
-                new BufferedOutputStream(new FileOutputStream(fileName, true)));
+        //BEWARE: do not "optimize" this method by using buffered streams,
+        // because COSStandardOutputStream only allows seeking
+        // if a FileOutputStream is passed, see PDFBOX-4312.
+        FileInputStream fis = new FileInputStream(fileName);
+        byte[] ba = IOUtils.toByteArray(fis);
+        fis.close();
+        FileOutputStream fos = new FileOutputStream(fileName);
+        fos.write(ba);
+        fis = new FileInputStream(fileName);
+        saveIncremental(fis, fos);
     }
-    
-    /** 
-     * Save the pdf as incremental.
-     * 
-     * @param input 
-     * @param output
+
+    /**
+     * Save the pdf as incremental for signing. See the signature examples
+     * sources on how to use this.
+     *
+     * @param input. This must be a FileInputStream or it won't work. It should
+     * point to the same file than the output parameter.
+     * @param output. This must be a FileOutputStream or it won't work. It must
+     * be positioned at the end of the file, i.e. it should just have written
+     * the original file. The appending constructor of FileOutputStream has been
+     * found not to be working, so you need to write the whole file yourself.
+     *
      * @throws IOException if something went wrong
-     * @throws COSVisitorException  if something went wrong
+     * @throws COSVisitorException if something went wrong
      */
     public void saveIncremental(InputStream input, OutputStream output) throws IOException, COSVisitorException
     {
@@ -1595,6 +1613,10 @@ public class PDDocument implements Pageable, Closeable
 
     /**
      * Tries to decrypt the document in memory using the provided decryption material.
+     * <p>
+     * Do not call this method if you have opened your document with one of the
+     * {@link #loadNonSeq(java.io.File, org.apache.pdfbox.io.RandomAccess) loadNonSeq} methods.
+     *
      *
      *  @see org.apache.pdfbox.pdmodel.encryption.StandardDecryptionMaterial
      *  @see org.apache.pdfbox.pdmodel.encryption.PublicKeyDecryptionMaterial

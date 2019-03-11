@@ -135,10 +135,6 @@ public abstract class PDAnnotation implements COSObjectable
             {
                 annot = new PDAnnotationTextMarkup(annotDic);
             }
-            else if (PDAnnotationLink.SUB_TYPE.equals(subtype))
-            {
-                annot = new PDAnnotationLink(annotDic);
-            }
             else if (PDAnnotationWidget.SUB_TYPE.equals(subtype))
             {
                 annot = new PDAnnotationWidget(annotDic);
@@ -211,10 +207,10 @@ public abstract class PDAnnotation implements COSObjectable
         if (rectArray != null)
         {
             if (rectArray.size() == 4
-                    && rectArray.get(0) instanceof COSNumber
-                    && rectArray.get(1) instanceof COSNumber
-                    && rectArray.get(2) instanceof COSNumber
-                    && rectArray.get(3) instanceof COSNumber)
+                    && rectArray.getObject(0) instanceof COSNumber
+                    && rectArray.getObject(1) instanceof COSNumber
+                    && rectArray.getObject(2) instanceof COSNumber
+                    && rectArray.getObject(3) instanceof COSNumber)
             {
                 rectangle = new PDRectangle(rectArray);
             }

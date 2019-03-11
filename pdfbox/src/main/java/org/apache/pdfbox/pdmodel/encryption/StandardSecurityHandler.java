@@ -288,7 +288,7 @@ public class StandardSecurityHandler extends SecurityHandler
     /**
      * Prepare document for encryption.
      *
-     * @param doc The documeent to encrypt.
+     * @param doc The document to encrypt.
      *
      * @throws IOException If there is an error accessing data.
      * @throws CryptographyException If there is an error with decryption.
@@ -772,7 +772,7 @@ public class StandardSecurityHandler extends SecurityHandler
      * @param password The plaintext password.
      * @param u The u entry of the encryption dictionary.
      * @param o The o entry of the encryption dictionary.
-     * @param permissions The permissions set in the the PDF.
+     * @param permissions The permissions set in the PDF.
      * @param id The document id used for encryption.
      * @param encRevision The revision of the encryption algorithm.
      * @param length The length of the encryption key.
@@ -821,7 +821,7 @@ public class StandardSecurityHandler extends SecurityHandler
      * @param password The plaintext password.
      * @param u The u entry of the encryption dictionary.
      * @param o The o entry of the encryption dictionary.
-     * @param permissions The permissions set in the the PDF.
+     * @param permissions The permissions set in the PDF.
      * @param id The document id used for encryption.
      * @param encRevision The revision of the encryption algorithm.
      * @param length The length of the encryption key.

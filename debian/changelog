@@ -1,3 +1,45 @@
+libpdfbox-java (1:1.8.16-2~18.04) bionic; urgency=medium
+
+  * Backport for OpenJDK 11. LP: #1814133.
+
+ -- Matthias Klose <doko@ubuntu.com>  Mon, 11 Mar 2019 12:29:30 +0100
+
+libpdfbox-java (1:1.8.16-2) unstable; urgency=medium
+
+  * Use glyphlist.txt from aglfn instead of lcdf-typetools during build.
+    (Closes: #922719)
+  * Update years of packaging copyright.
+  * Declare compliance with Debian Policy 4.3.0.
+  * Update Vcs-* fields to point to salsa.debian.org.
+  * Drop unneeded version constraint of libbcpkix-java build dependency.
+  * Remove ancient Breaks/Replaces on pre-oldoldstable package versions.
+  * Remove trailing whitespace from debian/changelog.
+  * debian/rules: drop get-orig-source target (uscan call).
+  * Use HTTPS for a couple of URLs in debian/*.
+  * Minimize debian/upstream/signing-key.asc.
+
+ -- gregor herrmann <gregoa@debian.org>  Tue, 19 Feb 2019 23:08:51 +0100
+
+libpdfbox-java (1:1.8.16-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream version 1.8.16.
+    - Fix CVE-2018-11797: denial-of-service via specially crafted PDF file.
+      (Closes: #910390)
+  * Declare compliance with Debian Policy 4.2.1.
+
+ -- Markus Koschany <apo@debian.org>  Sat, 06 Oct 2018 15:47:18 +0200
+
+libpdfbox-java (1:1.8.15-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream version 1.8.15.
+    - Fix CVE-2018-8036. (Closes: #902776)
+  * Declare compliance with Debian Policy 4.1.4.
+  * Switch to compat level 11.
+
+ -- Markus Koschany <apo@debian.org>  Sat, 30 Jun 2018 21:08:37 +0200
+
 libpdfbox-java (1:1.8.13-2) unstable; urgency=medium
 
   * Address FTBFS in debian/rules (Closes: #887939)
@@ -240,7 +282,7 @@ libpdfbox-java (1:1.5.0+dfsg-1) unstable; urgency=low
   * Register API docs with doc-base system.
 
   [ tony mancill ]
-  * Add separate API doc packages libjempbox-java-doc and 
+  * Add separate API doc packages libjempbox-java-doc and
     libfontbox-java-doc.
 
  -- gregor herrmann <gregoa@debian.org>  Wed, 30 Mar 2011 20:18:16 +0200

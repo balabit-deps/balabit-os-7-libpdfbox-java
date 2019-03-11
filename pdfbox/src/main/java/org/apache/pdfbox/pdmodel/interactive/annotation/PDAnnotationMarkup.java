@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Calendar;
 
 /**
- * This class represents the additonal fields of a Markup type Annotation.  See
+ * This class represents the additional fields of a Markup type Annotation.  See
  * section 12.5.6 of ISO32000-1:2008 (starting with page 390) for details on
  * annotation types.
  *
@@ -214,7 +214,7 @@ public class PDAnnotationMarkup extends PDAnnotation
     }
 
     /**
-     * This will set the the date and time the annotation was created.
+     * This will set the date and time the annotation was created.
      *
      * @param creationDate
      *            the date and time the annotation was created.
