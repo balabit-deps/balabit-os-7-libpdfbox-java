@@ -348,9 +348,13 @@ public class PDFStreamParser extends BaseParser
                 pdfSource.read();
 
                 boolean dotNotRead = (c != '.');
-                while( Character.isDigit(( c = (char)pdfSource.peek()) ) || (dotNotRead && (c == '.')) )
+                while (Character.isDigit((c = (char) pdfSource.peek())) || (dotNotRead && (c == '.')) || c == '-')
                 {
-                    buf.append( c );
+                    if (c != '-')
+                    {
+                        // PDFBOX-4064: ignore "-" in the middle of a number
+                        buf.append(c);
+                    }
                     pdfSource.read();
 
                     if (dotNotRead && (c == '.'))
@@ -466,23 +470,35 @@ public class PDFStreamParser extends BaseParser
             for (int bIdx = 0; bIdx < readBytes; bIdx++)
             {
                 final byte b = binCharTestArr[bIdx];
-                if (b < 0x09 || b > 0x0a && b < 0x20 && b != 0x0d)
+                if (b != 0 && b < 0x09 || b > 0x0a && b < 0x20 && b != 0x0d)
                 {
                     // control character or > 0x7f -> we have binary data
                     noBinData = false;
                     break;
                 }
                 // find the start of a PDF operator
-                if (startOpIdx == -1 && !(b == 9 || b == 0x20 || b == 0x0a || b == 0x0d))
+                if (startOpIdx == -1 && !(b == 0 || b == 9 || b == 0x20 || b == 0x0a || b == 0x0d))
                 {
                     startOpIdx = bIdx;
                 }
                 else if (startOpIdx != -1 && endOpIdx == -1 &&
-                         (b == 9 || b == 0x20 || b == 0x0a || b == 0x0d))
+                         (b == 0 || b == 9 || b == 0x20 || b == 0x0a || b == 0x0d))
                 {
                     endOpIdx = bIdx;
                 }
             }
+
+            // PDFBOX-3742: just assuming that 1-3 non blanks is a PDF operator isn't enough
+            if (endOpIdx != -1 && startOpIdx != -1)
+            {
+                // usually, the operator here is Q, sometimes EMC (PDFBOX-2376).
+                String s = new String(binCharTestArr, startOpIdx, endOpIdx - startOpIdx);
+                if (!"Q".equals(s) && !"EMC".equals(s))
+                {
+                    noBinData = false;
+                }
+            }
+
             if (readBytes == maxBinCharTestLength) // only if not close to eof
             {
                 // a PDF operator is 1-3 bytes long

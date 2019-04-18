@@ -17,7 +17,6 @@
 package org.apache.pdfbox.pdmodel.common;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -215,18 +214,14 @@ public class PDNumberTreeNode implements COSObjectable
      */
     protected COSObjectable convertCOSToPD( COSBase base ) throws IOException
     {
-        COSObjectable retval = null;
         try
         {
-            Constructor<? extends COSObjectable> ctor = valueType.getConstructor( new Class[] { base.getClass() } );
-            retval = ctor.newInstance( new Object[] { base } );
+            return valueType.getDeclaredConstructor( new Class[] { base.getClass() } ).newInstance( new Object[] { base } );
         }
         catch( Throwable t )
         {
             throw new IOException( "Error while trying to create value in number tree:" + t.getMessage());
-
         }
-        return retval;
     }
 
     /**

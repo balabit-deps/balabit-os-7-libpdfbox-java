@@ -14,37 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.pdfbox.exceptions;
 
+package org.apache.fontbox.afm;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * An simple class that allows a sub exception to be stored.
  *
- * @author <a href="mailto:ben@benlitchfield.com">Ben Litchfield</a>
- * @version $Revision: 1.4 $
+ * @author Tilman Hausherr
  */
-public class WrappedIOException extends IOException
+public class AFMParserTest
 {
-    /**
-     * Constructor.
-     *
-     * @param e The root exception that caused this exception.
-     */
-    public WrappedIOException( Throwable e )
+    @Test
+    public void testEof() throws IOException
     {
-        initCause( e );
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param message Descriptive text for the exception.
-     * @param e The root exception that caused this exception.
-     */
-    public WrappedIOException( String message, Throwable e )
-    {
-        super( message );
-        initCause( e );
+        try
+        {
+            new AFMParser(new ByteArrayInputStream("huhu".getBytes())).parse();
+        }
+        catch (IOException ex)
+        {
+            Assert.assertEquals("Error: The AFM file should start with StartFontMetrics and not 'huhu'", ex.getMessage());
+        }
     }
 }

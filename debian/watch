@@ -9,4 +9,4 @@ dversionmangle=s/(?:\.|\+)dfsg$//,\
 downloadurlmangle=s/pdfbox\/([\d.]+)\//pdfbox\/$1\/pdfbox-$1-src.zip/,\
 filenamemangle=s/([\d.]+)\//pdfbox-$1-src.zip/,\
 pgpsigurlmangle=s/$/.asc/ \
-	http://archive.apache.org/dist/pdfbox/ ([\d.]+)/
+	https://archive.apache.org/dist/pdfbox/ ([\d.]+)/
