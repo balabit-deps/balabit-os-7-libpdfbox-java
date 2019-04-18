@@ -1,3 +1,9 @@
+libpdfbox-java (1:1.8.16-2~18.04bb1) bionic; urgency=medium
+
+  * Balabit patched version
+
+ -- Balabit Platform Team <devnull@dev.null>  Thu, 18 Apr 2019 11:15:25 +0000
+
 libpdfbox-java (1:1.8.16-2~18.04) bionic; urgency=medium
 
   * Backport for OpenJDK 11. LP: #1814133.
