@@ -542,10 +542,9 @@ public class NonSequentialPDFParser extends PDFParser
         long prev = startXrefOffset;
         // ---- parse whole chain of xref tables/object streams using PREV
         // reference
-        long lastPrev = -1;
-        while (prev > 0 && prev != lastPrev)
+        Set<Long> prevSet = new HashSet<Long>();
+        while (prev > 0)
         {
-            lastPrev = prev;
             // seek to xref table
             setPdfSource(prev);
 
@@ -632,11 +631,11 @@ public class NonSequentialPDFParser extends PDFParser
                     }
                 }
             }
-        }
-        if (prev == lastPrev)
-        {
-            //TODO better idea needed? PDFBOX-3446
-            throw new IOException("/Prev loop at offset " + prev);
+            if (prevSet.contains(prev))
+            {
+                throw new IOException("/Prev loop at offset " + prev);
+            }
+            prevSet.add(prev);
         }
         // ---- build valid xrefs out of the xref chain
         xrefTrailerResolver.setStartxref(startXrefOffset);
@@ -645,6 +644,8 @@ public class NonSequentialPDFParser extends PDFParser
 
         // check the offsets of all referenced objects
         checkXrefOffsets();
+        // copy xref table
+        document.addXRefTable(xrefTrailerResolver.getXrefTable());
         return trailer;
     }
 
@@ -1749,8 +1750,11 @@ public class NonSequentialPDFParser extends PDFParser
                 whitespace = pdfSource.read();
             }
 
+            boolean hasCR = false;
+
             if (whitespace == 0x0D)
             {
+                hasCR = true;
                 whitespace = pdfSource.read();
                 if (whitespace != 0x0A)
                 {
@@ -1812,7 +1816,7 @@ public class NonSequentialPDFParser extends PDFParser
             if (useReadUntilEnd)
             {
                 out = stream.createFilteredStream();
-                readUntilEndStream(new EndstreamOutputStream(out));
+                readUntilEndStream(new EndstreamOutputStream(out, hasCR));
             }
             String endStream = readString();
             if (endStream.equals("endobj") && isLenient)

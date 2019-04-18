@@ -128,7 +128,7 @@ public final class TypeMapping
             Class<? extends AbstractStructuredType> propertyTypeClass = type.getImplementingClass().asSubclass(
                     AbstractStructuredType.class);
             Constructor<? extends AbstractStructuredType> construct = propertyTypeClass
-                    .getConstructor(new Class<?>[] { XMPMetadata.class });
+                    .getDeclaredConstructor(new Class<?>[] { XMPMetadata.class });
             AbstractStructuredType tmp = construct.newInstance(metadata);
             tmp.setPropertyName(propertyName);
             return tmp;
@@ -174,7 +174,7 @@ public final class TypeMapping
         {
             Class<? extends AbstractSimpleProperty> clz = type.getImplementingClass().asSubclass(
                     AbstractSimpleProperty.class);
-            Constructor<? extends AbstractSimpleProperty> cons = clz.getConstructor(simplePropertyConstParams);
+            Constructor<? extends AbstractSimpleProperty> cons = clz.getDeclaredConstructor(simplePropertyConstParams);
             return cons.newInstance(params);
         }
         catch (NoSuchMethodError e)
